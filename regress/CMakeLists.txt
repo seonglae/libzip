@@ -6,6 +6,7 @@ set(TEST_PROGRAMS
   exact_read_integrity
   fopen_unchanged
   fseek
+  source_archive_lifetime
   source_seek
 )
 

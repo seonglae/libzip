@@ -1,0 +1,4 @@
+description derived sources are invalidated when their source archive is closed
+program source_archive_lifetime
+return 0
+file testdeflated.zip testdeflated.zip

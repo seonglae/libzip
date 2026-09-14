@@ -44,7 +44,6 @@ ZIP_EXTERN zip_source_t *zip_source_zip_file(zip_t *za, zip_t *srcza, zip_uint64
 
 
 ZIP_EXTERN zip_source_t *zip_source_zip_file_create(zip_t *srcza, zip_uint64_t srcidx, zip_flags_t flags, zip_uint64_t start, zip_int64_t len, const char *password, zip_error_t *error) {
-    /* TODO: We need to make sure that the returned source is invalidated when srcza is closed. */
     zip_source_t *src, *s2;
     zip_stat_t st;
     zip_file_attributes_t attributes;
@@ -252,11 +251,6 @@ ZIP_EXTERN zip_source_t *zip_source_zip_file_create(zip_t *srcza, zip_uint64_t s
 
     /* In all cases, src is a window source and therefore is owned by this function. */
 
-    if (_zip_source_set_source_archive(src, srcza) < 0) {
-        zip_source_free(src);
-        return NULL;
-    }
-
     /* creating a layered source calls zip_keep() on the lower layer, so we free it */
 
     if (needs_decrypt) {
@@ -306,6 +300,11 @@ ZIP_EXTERN zip_source_t *zip_source_zip_file_create(zip_t *srcza, zip_uint64_t s
             return NULL;
         }
         src = s2;
+    }
+
+    if (_zip_source_set_source_archive(src, srcza) < 0) {
+        zip_source_free(src);
+        return NULL;
     }
 
     return src;
